@@ -1,0 +1,9 @@
+# Custom domain configuration for TelePal PWA
+# Replace 'your-domain.com' with your actual domain
+# Examples:
+# telepal.yourdomain.com
+# app.yourdomain.com
+# yourdomain.com
+
+# Uncomment and replace with your domain:
+# your-domain.com
