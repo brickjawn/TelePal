@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TelePal - Professional Teleprompter</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Professional teleprompter with script storage and offline capabilities">
+    <meta name="theme-color" content="#1976d2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TelePal">
+    <meta name="msapplication-TileColor" content="#1976d2">
+    <meta name="msapplication-tap-highlight" content="no">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <h1>TelePal</h1>
+            <div class="header-controls">
+                <button id="scriptsBtn" class="btn btn-secondary">Scripts</button>
+                <button id="settingsBtn" class="btn btn-secondary">Settings</button>
+                <button id="fullscreenBtn" class="btn btn-primary">Fullscreen</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Script Editor -->
+            <div id="editorView" class="view active">
+                <div class="editor-container">
+                    <div class="editor-header">
+                        <input type="text" id="scriptTitle" placeholder="Script Title" class="title-input">
+                        <div class="editor-actions">
+                            <button id="playBtn" class="btn btn-primary">Start Teleprompter</button>
+                            <button id="saveBtn" class="btn btn-secondary">Save Script</button>
+                            <button id="newScriptBtn" class="btn btn-secondary">New Script</button>
+                        </div>
+                    </div>
+                    <textarea id="scriptContent" placeholder="Enter your script here...
+
+Tips:
+• Use line breaks for natural pauses
+• Keep sentences concise for better readability
+• Practice reading aloud to check flow"></textarea>
+                    <div class="editor-footer">
+                        <span id="wordCount">0 words</span>
+                        <span id="estimatedTime">0:00</span>
+                        <span id="scriptStatus" class="script-status">Ready</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scripts Library -->
+            <div id="scriptsView" class="view">
+                <div class="scripts-container">
+                    <div class="scripts-header">
+                        <h2>Script Library</h2>
+                        <button id="newScriptFromLibraryBtn" class="btn btn-primary">New Script</button>
+                    </div>
+                    <div id="scriptsList" class="scripts-list">
+                        <!-- Scripts will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teleprompter View -->
+            <div id="teleprompterView" class="view">
+                <div class="teleprompter-container">
+                    <div class="teleprompter-content">
+                        <div id="teleprompterText" class="teleprompter-text"></div>
+                    </div>
+                    
+                    <!-- Controls -->
+                    <div class="teleprompter-controls">
+                        <button id="playPauseBtn" class="btn btn-primary btn-large">
+                            <span class="btn-icon">▶</span>
+                        </button>
+                        <button id="stopBtn" class="btn btn-secondary">Stop</button>
+                        
+                        <div class="speed-control">
+                            <label>Speed:</label>
+                            <input type="range" id="speedSlider" min="0.1" max="5" step="0.1" value="1">
+                            <span id="speedValue">1.0x</span>
+                        </div>
+                        
+                        <div class="position-control">
+                            <label>Position:</label>
+                            <input type="range" id="positionSlider" min="0" max="100" value="0">
+                            <span id="positionValue">0%</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="progress-container">
+                        <div id="progressBar" class="progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Scripts Modal -->
+        <div id="scriptsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Script Library</h2>
+                    <button id="closeScriptsBtn" class="btn-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="scripts-actions">
+                        <button id="newScriptModalBtn" class="btn btn-primary">New Script</button>
+                        <button id="importScriptBtn" class="btn btn-secondary">Import</button>
+                        <button id="exportAllBtn" class="btn btn-secondary">Export All</button>
+                    </div>
+                    <div id="modalScriptsList" class="scripts-list">
+                        <!-- Scripts will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Settings</h2>
+                    <button id="closeSettingsBtn" class="btn-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="setting-group">
+                        <label for="fontSize">Font Size:</label>
+                        <input type="range" id="fontSize" min="12" max="72" value="24">
+                        <span id="fontSizeValue">24px</span>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label for="textColor">Text Color:</label>
+                        <input type="color" id="textColor" value="#ffffff">
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label for="backgroundColor">Background Color:</label>
+                        <input type="color" id="backgroundColor" value="#000000">
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label for="lineSpacing">Line Spacing:</label>
+                        <input type="range" id="lineSpacing" min="0.8" max="2.5" step="0.1" value="1.2">
+                        <span id="lineSpacingValue">1.2x</span>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label for="textAlign">Text Alignment:</label>
+                        <select id="textAlign">
+                            <option value="left">Left</option>
+                            <option value="center" selected>Center</option>
+                            <option value="right">Right</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label>
+                            <input type="checkbox" id="mirrorHorizontal">
+                            Mirror Horizontally
+                        </label>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label>
+                            <input type="checkbox" id="highContrast">
+                            High Contrast Mode
+                        </label>
+                    </div>
+
+                    <div class="setting-group">
+                        <label>
+                            <input type="checkbox" id="autoSave">
+                            Auto-save scripts
+                        </label>
+                    </div>
+
+                    <div class="setting-group">
+                        <label>
+                            <input type="checkbox" id="offlineMode">
+                            Offline mode
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Install Prompt -->
+        <div id="installPrompt" class="install-prompt">
+            <div class="install-content">
+                <span>Install TelePal for offline access</span>
+                <button id="installBtn" class="btn btn-primary">Install</button>
+                <button id="dismissInstallBtn" class="btn-close">&times;</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
